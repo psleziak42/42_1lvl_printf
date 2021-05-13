@@ -63,12 +63,11 @@ int	ft_hexa_l(unsigned long int i, int *l)
 	return (*l);
 }
 
-void	ft_hexa(unsigned long int i, char a, int *l)
+void	ft_hexa(unsigned long int i, char a)
 {
 	if (i != 0)
 	{
-		(*l)++;
-		ft_hexa(i / 16, a, l);
+		ft_hexa(i / 16, a);
 		ft_putchar(i % 16, a);
 	}
 }
@@ -77,10 +76,10 @@ void	ft_hexa(unsigned long int i, char a, int *l)
 void	ft_format(char *s, int *j, struct format *p, va_list sptr)
 {
 	int i;
-//	int l;
+	int l;
 	
 	i = -1;
-//	l = 0;
+	l = 0;
 	if (s[*j] == 'c')
 	{
 		if (p->width > 0)
@@ -281,7 +280,7 @@ void	ft_format(char *s, int *j, struct format *p, va_list sptr)
 		}
 		else
 		{
-			if (u == 0)
+			if (u == 0 && p->precision == 0)
 				return;
 			else
 			{
@@ -293,12 +292,10 @@ void	ft_format(char *s, int *j, struct format *p, va_list sptr)
 	}
 	else if (s[*j] == 'u')
 	{
-		//int o;
 		int y;
 		int u;
 		char *z;
 		
-	//	o = 0;
 		u = va_arg(sptr, int);
 		z = ft_itoa(u);
 		y = ft_strlen(z);
@@ -312,7 +309,6 @@ void	ft_format(char *s, int *j, struct format *p, va_list sptr)
 			}
 			if (p->minus > 0)
 			{
-				i = -1;
 				if (y > p->precision)
 				{
 					while (++i < y)
@@ -322,7 +318,6 @@ void	ft_format(char *s, int *j, struct format *p, va_list sptr)
 				}
 				else 
 				{
-					i = -1;
 					while (++i < p->precision - y)
 						write(1, "0", 1);
 					i = -1;
@@ -335,7 +330,6 @@ void	ft_format(char *s, int *j, struct format *p, va_list sptr)
 			}
 			else 
 			{
-				i = -1;
 				if (p->precision < p->width)
 				{
 					while (++i < p->width - y) // tu jest blad
@@ -358,7 +352,6 @@ void	ft_format(char *s, int *j, struct format *p, va_list sptr)
 			}
 			if (p->zero > 0)
 			{
-				i = -1;
 				while (++i < p->width - y)
 					write(1, "0", 1);
 				i = -1;
@@ -367,7 +360,6 @@ void	ft_format(char *s, int *j, struct format *p, va_list sptr)
 			}
 			else if (p->minus > 0)
 			{
-				i = -1;
 				while (++i < y)
 					write(1, &z[i], 1);
 				i = -1;
@@ -376,7 +368,6 @@ void	ft_format(char *s, int *j, struct format *p, va_list sptr)
 			}
 			else
 			{
-				i = -1;
 				while(++i < p->width - y)
 					write(1, " ", 1);
 				i = -1;
@@ -391,7 +382,6 @@ void	ft_format(char *s, int *j, struct format *p, va_list sptr)
 				write(1, "error 0 161", 11);	
 			//	break;
 			}
-			i = -1;
 			while (++i < p->precision - y)
 				write(1, "0", 1);
 			i = -1;
@@ -400,31 +390,19 @@ void	ft_format(char *s, int *j, struct format *p, va_list sptr)
 		}
 		else
 		{
-			if (u == 0)
+			if (u == 0 && p->precision == 0)
 				return;
-			i = -1;
 			while (++i < y)
 				write(1, &z[i], 1);
 		}
 	}
-/*
-else if (s[*j] == 'd'|| s[*j] == 'i') // brakuje to zrobic, wrzuc to na github i testuj :) 
+	else if (s[*j] == 'x'|| s[*j] == 'X') // tu bedzie podobny problem jak z 'p' brakuje to jest unsigned long, ale nie jestem pewien 
 	{
-		int o;
 		int y;
 		int u;
-		int x;
-		char *z;
 		
-		o = 0;
 		u = va_arg(sptr, int);
-		z = ft_itoa(u);
-		y = ft_strlen(z);
-		if (s[*j] == 'x' || s[*j] == 'X')
-		{
-			x = ft_hexa_l(u, &l);
-			y = x;
-		}
+		y = ft_hexa_l(u, &l);
 		if (p->width > 0 && p->precision > 0)
 		{
 			if (p->zero > 1)
@@ -437,51 +415,37 @@ else if (s[*j] == 'd'|| s[*j] == 'i') // brakuje to zrobic, wrzuc to na github i
 				i = -1;
 				if (y > p->precision)
 				{
-					if (s[*j] == 'x' || s[*j] == 'X')
-					{
-						ft_hexa(u, s[*j], &l);
-						while(++i < p->width - y)
-							write(1, " ", 1);
-					}
-					else	
-					{
-						while (++i < y)
-							write(1, &z[i], 1);
-						while (i++ < p->width)
-							write(1, " ", 1);
-					}
+					ft_hexa(u, s[*j]);
+					while(++i < p->width - y)
+						write(1, " ", 1);
 				}
 				else 
 				{
 					while (++i < p->precision - y) // tutaj trzeba poprawic :)
 						write(1, "0", 1);
-					i = 0;
-					if (s[*j] == 'x' || s[*j] == 'X')
-						ft_hexa(u, s[*j], &l);
-					else
-					{
-						while (i++ < y)
-							write(1, &z[o++], 1);
-					}
-					i = -1;
+					ft_hexa(u, s[*j]);
 					while(++i < p->width - p->precision)
 							write(1, " ", 1);
 				}
 			}
 			else 
 			{
-				i = -1;
-				if (p->precision < p->width)
+				if (y > p->precision)
 				{
-					while (++i < p->width - y) // tu jest blad
+					while (++i < p->width - y) 
 						write(1, " ", 1);
+					ft_hexa(u, s[*j]);
 				}
-				i = -1;
-				while (++i < p->precision - y)
-					write(1, "0", 1);
-				i = 0;
-				while (i < y)
-					write(1, &z[i++], 1);	
+				else
+				{
+					i = -1;
+					while (++i < p->width - p->precision)
+						write(1, " ", 1);
+					i = -1;
+					while (++i < p->precision - y)
+						write(1, "0", 1);
+					ft_hexa(u, s[*j]);			
+				}
 			}
 		}
 		else if (p->width > 0 && p->precision == 0)
@@ -496,50 +460,19 @@ else if (s[*j] == 'd'|| s[*j] == 'i') // brakuje to zrobic, wrzuc to na github i
 				i = -1;
 				while (++i < p->width - y)
 					write(1, "0", 1);
-					write(1, "\0", 1);
-				if (s[*j] == 'x' || s[*j] == 'X')
-					ft_hexa(u, s[*j], &l);
-				else
-				{
-					i = -1;
-					while (++i < y)
-						write(1, &z[i], 1);
-				}
+				ft_hexa(u, s[*j]);
 			}
 			else if (p->minus > 0)
 			{
-				i = -1;
-				if (s[*j] == 'x' || s[*j] == 'X')
-					ft_hexa(u, s[*j], &l);
-				else
-				{
-					while (++i < y)
-						write(1, &z[i], 1);
-				}
-				i = -1;
+				ft_hexa(u, s[*j]);
 				while (++i < p->width - y)
 					write(1, " ", 1);
 			}
 			else
 			{
-				i = 0;
-				while(i < (p->width - y))
-				{
+				while(++i < p->width - y)
 					write(1, " ", 1);
-					i++;
-				}
-				if (s[*j] == 'x' || s[*j] == 'X')
-					ft_hexa(u, s[*j], &l);
-				else
-				{
-					o = 0;
-					while(i < p->width)
-					{
-						write(1, &z[o], 1);
-						i++;
-						o++;
-					}
-				}
+				ft_hexa(u, s[*j]);
 			}
 		}
 		else if (p->precision > 0 && p->width == 0)
@@ -551,25 +484,18 @@ else if (s[*j] == 'd'|| s[*j] == 'i') // brakuje to zrobic, wrzuc to na github i
 			}
 			else
 			{
-				i = -1;
 				while (++i < p->precision - y)
 					write(1, "0", 1);
-				va_arg(sptr, int); // blad + brakuje hexa`
+				ft_hexa(u, s[*j]);
 			}
 		}
 		else
 		{
-			if (s[*j] == 'x' || s[*j] == 'X')
-				ft_hexa(u, s[*j], &l);
-			else
-			{
-				i = -1;
-				while (++i < y)
-					write(1, &z[i], 1);
-			}
+			if (u == 0 && p->precision == 0)
+				return;
+			ft_hexa(u, s[*j]);
 		}
 	}
-*/
 //0 nie moze byc z s
 //.5 ogranicza dlugosc stringu, jesli jest krotszy od precision to przepisuje sie caly i tyle
 //width dodaje puste pola jesli string jest krotszy, jesli dluzszy przepisuje sie caly
@@ -651,11 +577,13 @@ else if (s[*j] == 'd'|| s[*j] == 'i') // brakuje to zrobic, wrzuc to na github i
 //- dla wiekszedo width od hex numeru to wyrownanie do lewej
 	else if (s[*j] == 'p')
 	{
-		int l;
-		unsigned long int i;
+		unsigned long int u;
+		long int y;
 	
-		i = va_arg(sptr, unsigned long int);
-		l = 0;
+		u = va_arg(sptr, unsigned long int);
+		y = ft_hexa_l(u, &l);
+	//	printf("y = %ld\n", y);
+
 		if (p->precision > 0 || p->zero > 0)
 			write(1, "error precision/zero dla p", 26);
 		if (p->width > 0)
@@ -663,26 +591,22 @@ else if (s[*j] == 'd'|| s[*j] == 'i') // brakuje to zrobic, wrzuc to na github i
 			if (p->minus > 0)
 			{
 				write(1, "0x", 2);
-				ft_hexa(i, s[*j], &l);
-				while (l++ < p->width - 2)
+				ft_hexa(u, s[*j]);
+				while (++i < p->width - 2 - y)
 					write(1, " ", 1);
 			}
 			else
 			{
-				ft_hexa_l(i, &l);
-				while (l < p->width - 2)
-				{
+				while (++i < p->width - 2 - y)
 					write(1, " ", 1);
-					l++;
-				}
 				write(1, "0x", 2);
-				ft_hexa(i, s[*j], &l);
+				ft_hexa(u, s[*j]);
 			}
 		}
 		else
 		{
 			write(1, "0x", 2);
-			ft_hexa(i, s[*j], &l);
+			ft_hexa(u, s[*j]);
 		}
 	}	
 }
