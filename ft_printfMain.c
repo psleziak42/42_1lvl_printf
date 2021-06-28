@@ -41,7 +41,7 @@ int	ft_printf(const char *s, ...)
 	return (q);
 }
 
-int main
+int main()
 {
 	ft_printf("Mam na imie %s, mam %d lat, a w hexadecimal to %X", "Przemek", 28, 28);
 	return 0;
