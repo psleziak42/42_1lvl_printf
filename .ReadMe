@@ -2,9 +2,8 @@
 
 1. Git Clone the files
 2. Go inside the repository inside your teminal
-3. type "make"
-4. copy: "gcc ft_printfMain.c -L. -lftprintf -I ft_printf.h" #note you can change the main inside to check different flags' combinations and conversions.
-5. run "./a.out"
+3. type "make" to create library
+4. type "make run" to run the program and execute it #note you can change the main inside to check different flags' combinations and conversions.
 
 #Objective:
 
