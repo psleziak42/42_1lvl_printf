@@ -1,15 +1,10 @@
-CFLAGS	= -Wall -Werror -Wextra
+JEBAC_PRINTF	= -Wall -Werror -Wextra
 
-SRCS	=	ft_printf2.c
+SRCS	=	ft_printfMain.c ft_flags_utils.c ft_utils.c ft_hexa_utils.c ft_c.c ft_s.c ft_p.c ft_u.c ft_x.c ft_d.c
 
 CC	=	gcc
 RM	=	rm -f
 	
-INCLUDES=	
-
-
- ## gcc ft_printf2.c ${FLAGS} -I../0lvl_libft_1week/ -L../0lvl_libft_1week/ -lft -o ft_printf2
-
 OBJS	=	${SRCS:.c=.o}
 
 NAME	=	libftprintf.a
@@ -17,15 +12,15 @@ NAME	=	libftprintf.a
 all:	${NAME}
 
 .c.o:
-	${CC} ${FLAGS} -I. -L./libft/ -lft -c $< -o ${<:.c=.o}
+	${CC} ${JEBAC_PRINTF} -I. -c $< -o ${<:.c=.o} 
 
 ${NAME}:libft.a ${OBJS}
-	ar rcs	${NAME} $ ${OBJS}
+	ar rcs	${NAME} ${OBJS} ./libft/*o
 
 clean:
 	${RM} ${OBJS}
 
-fclean:
+fclean: clean
 	${RM} ${NAME}
 
 re:	fclean all
