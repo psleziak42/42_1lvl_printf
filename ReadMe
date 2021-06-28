@@ -1,0 +1,13 @@
+#How to run the program:
+
+1. Git Clone the files
+2. Go inside the repository inside your teminal
+3. type "make"
+4. copy: "gcc ft_printfMain.c -L. -lftprintf -I ft_printf.h" #note you can change the main inside to check different flags' combinations and conversions.
+5. run "./a.out"
+
+#Objective:
+
+The objective of this project is to write my own printf function that will act like original printf from stdio.h library. 
+The conversions made are: c, s, p, u, x, X, d, i and %
+The flags covered are: -, 0, ., *, minimum field width and precision
